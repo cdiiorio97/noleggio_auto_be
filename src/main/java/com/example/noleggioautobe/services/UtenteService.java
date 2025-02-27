@@ -1,8 +1,8 @@
-package Services;
+package com.example.noleggioautobe.services;
 
-import DTO.DtoUtente;
-import Entities.Utente;
-import Repositories.UtenteRepository;
+import com.example.noleggioautobe.dto.DtoUtente;
+import com.example.noleggioautobe.entities.Utente;
+import com.example.noleggioautobe.repositories.UtenteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

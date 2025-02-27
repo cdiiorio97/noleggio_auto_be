@@ -1,6 +1,6 @@
-package DTO;
+package com.example.noleggioautobe.dto;
 
-import Entities.Utente;
+import com.example.noleggioautobe.entities.Utente;
 import lombok.Data;
 
 @Data

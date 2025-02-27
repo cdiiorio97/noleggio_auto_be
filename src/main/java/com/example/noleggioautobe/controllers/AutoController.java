@@ -1,7 +1,7 @@
-package Controllers;
+package com.example.noleggioautobe.controllers;
 
-import DTO.DtoAuto;
-import Services.AutoService;
+import com.example.noleggioautobe.dto.DtoAuto;
+import com.example.noleggioautobe.services.AutoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class AutoController {
     private AutoService autoService;
 
     @GetMapping("/get-all")
-    public ResponseEntity getauto() {
+    public ResponseEntity getAuto() {
         List<DtoAuto> auto = autoService.trovaAuto();
         return ResponseEntity.ok(auto);
     }

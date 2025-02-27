@@ -1,4 +1,4 @@
-package Entities;
+package com.example.noleggioautobe.entities;
 
 import lombok.Data;
 

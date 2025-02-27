@@ -1,8 +1,6 @@
-package DTO;
+package com.example.noleggioautobe.dto;
 
-import Entities.Auto;
-import Entities.Prenotazione;
-import Entities.Utente;
+import com.example.noleggioautobe.entities.Prenotazione;
 import lombok.Data;
 
 import java.util.Date;

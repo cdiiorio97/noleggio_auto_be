@@ -1,7 +1,7 @@
-package Controllers;
+package com.example.noleggioautobe.controllers;
 
-import DTO.DtoPrenotazione;
-import Services.PrenotazioneService;
+import com.example.noleggioautobe.dto.DtoPrenotazione;
+import com.example.noleggioautobe.services.PrenotazioneService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

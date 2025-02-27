@@ -1,6 +1,6 @@
-package Repositories;
+package com.example.noleggioautobe.repositories;
 
-import Entities.Prenotazione;
+import com.example.noleggioautobe.entities.Prenotazione;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

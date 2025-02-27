@@ -1,8 +1,8 @@
-package Services;
+package com.example.noleggioautobe.services;
 
-import DTO.DtoAuto;
-import Entities.Auto;
-import Repositories.AutoRepository;
+import com.example.noleggioautobe.dto.DtoAuto;
+import com.example.noleggioautobe.entities.Auto;
+import com.example.noleggioautobe.repositories.AutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

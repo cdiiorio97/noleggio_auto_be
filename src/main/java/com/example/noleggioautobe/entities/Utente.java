@@ -1,4 +1,4 @@
-package Entities;
+package com.example.noleggioautobe.entities;
 
 import lombok.Data;
 
@@ -18,4 +18,5 @@ public class Utente {
     private String email;
     private String password;
     private Boolean isAdmin;
+
 }
