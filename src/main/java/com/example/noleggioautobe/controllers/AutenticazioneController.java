@@ -1,6 +1,7 @@
 package com.example.noleggioautobe.controllers;
 
 import com.example.noleggioautobe.dto.DtoLoginRequest;
+import com.example.noleggioautobe.dto.DtoUtente;
 import com.example.noleggioautobe.services.AutenticazioneService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class AutenticazioneController {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody DtoLoginRequest loginRequest) {
         try {
-            String loginAvvenuto = autenticazioneService.autenticazione(loginRequest.getUsername(), loginRequest.getPassword());
+            DtoUtente loginAvvenuto = autenticazioneService.autenticazione(loginRequest.getUsername(), loginRequest.getPassword());
             return ResponseEntity.ok(loginAvvenuto);
         } catch (Exception e) {
             log.error(e.getMessage());
