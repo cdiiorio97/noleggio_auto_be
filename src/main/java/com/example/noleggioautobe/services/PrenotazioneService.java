@@ -19,13 +19,13 @@ public class PrenotazioneService {
 
     public List<DtoPrenotazione> trovaPrenotazioni(){
         List<Prenotazione> prenotazioni = prenotazioneRepository.findAll();
-        List<DtoPrenotazione> dtoPrenotazioni = new ArrayList<>();
+        List<DtoPrenotazione> dtoPrenotazioniList = new ArrayList<>();
         if(prenotazioni.isEmpty())
             log.warn("Nessuna prenotazione trovata");
         for(Prenotazione p : prenotazioni){
-            dtoPrenotazioni.add(new DtoPrenotazione(p));
+            dtoPrenotazioniList.add(new DtoPrenotazione(p));
         }
-        return dtoPrenotazioni;
+        return dtoPrenotazioniList;
     }
 
     public DtoPrenotazione getPrenotazioneById(Integer id) {
@@ -33,5 +33,31 @@ public class PrenotazioneService {
         if(p == null)
             log.error("Prenotazione non trovata");
         return p != null ? new DtoPrenotazione(p) : null;
+    }
+
+    public List<DtoPrenotazione> getPrenotazioneByUserId(Integer id) {
+        List<Prenotazione> p = prenotazioneRepository.findByUtenteId(id).orElse(null);
+        List<DtoPrenotazione> dtoPrenotazioniList = new ArrayList<>();
+        if(p == null)
+            log.error("Nessuna prenotazione non trovata per l'utente");
+        else {
+            for (Prenotazione elem : p) {
+                dtoPrenotazioniList.add(new DtoPrenotazione(elem));
+            }
+        }
+        return dtoPrenotazioniList;
+    }
+
+    public List<DtoPrenotazione> trovaRichiestePrenotazioni(){
+        List<Prenotazione> richieste = prenotazioneRepository.findByConfermataAndCancellata().orElse(null);
+        List<DtoPrenotazione> dtoRichiesteList = new ArrayList<>();
+        if(richieste == null)
+            log.warn("Nessuna richiesta trovata");
+        else {
+            for (Prenotazione p : richieste) {
+                dtoRichiesteList.add(new DtoPrenotazione(p));
+            }
+        }
+        return dtoRichiesteList;
     }
 }

@@ -15,11 +15,13 @@ public class DtoUtente {
     public DtoUtente() {}
 
     public DtoUtente(Utente utente) {
-        this.id = utente.getId();
-        this.nome = utente.getNome();
-        this.cognome = utente.getCognome();
-        this.email = utente.getEmail();
-        this.password = utente.getPassword();
-        this.isAdmin = utente.getIsAdmin();
+        if(utente != null) {
+            this.id = utente.getId();
+            this.nome = utente.getNome();
+            this.cognome = utente.getCognome();
+            this.email = utente.getEmail();
+            this.password = utente.getPassword();
+            this.isAdmin = utente.getIsAdmin();
+        }
     }
 }

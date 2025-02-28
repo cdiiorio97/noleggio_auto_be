@@ -31,4 +31,16 @@ public class PrenotazioneController {
         DtoPrenotazione dtoPrenotazione = prenotazioneService.getPrenotazioneById(id);
         return ResponseEntity.ok(dtoPrenotazione);
     }
+
+    @GetMapping("/get-by-user-id")
+    public ResponseEntity getPrenotazioneByUserId(@RequestParam Integer id){
+        List<DtoPrenotazione> dtoPrenotazione = prenotazioneService.getPrenotazioneByUserId(id);
+        return ResponseEntity.ok(dtoPrenotazione);
+    }
+
+    @GetMapping("/richieste-prenotazioni")
+    public ResponseEntity richiestePrenotazioni(){
+        List<DtoPrenotazione> dtoRichieste = prenotazioneService.trovaRichiestePrenotazioni();
+        return ResponseEntity.ok(dtoRichieste);
+    }
 }
