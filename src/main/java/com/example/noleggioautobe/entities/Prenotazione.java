@@ -25,17 +25,19 @@ public class Prenotazione {
     private Date dataInizio;
     private Date dataFine;
     private Date dataConferma;
-    private Date dataCancellazione;
+    private Date dataRifiuto;
+
+    private Boolean confermata;
 
     @ManyToOne
     @JoinColumn(name = "confermata_da_id")
     private Utente confermataDa;
 
-    private Boolean confermata;
-    private Boolean cancellata;
+    private Boolean rifiutata;
 
     @ManyToOne
-    @JoinColumn(name = "cancellata_da_id")
-    private Utente cancellataDa;
+    @JoinColumn(name = "rifiutata_da_id")
+    private Utente rifiutataDa;
+
 
 }

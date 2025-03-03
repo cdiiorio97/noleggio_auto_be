@@ -15,11 +15,11 @@ public class DtoPrenotazione {
     private Date dataInizio;
     private Date dataFine;
     private Date dataConferma;
-    private Date dataCancellazione;
     private DtoUtente confermataDa;
     private Boolean confermata;
-    private Boolean cancellata;
-    private DtoUtente cancellataDa;
+    private Boolean rifiutata;
+    private DtoUtente rifiutataDa;
+    private Date dataRifiuto;
 
     public  DtoPrenotazione(){}
 
@@ -31,10 +31,10 @@ public class DtoPrenotazione {
         this.dataInizio = prenotazione.getDataInizio();
         this.dataFine = prenotazione.getDataFine();
         this.dataConferma = prenotazione.getDataConferma();
-        this.dataCancellazione = prenotazione.getDataCancellazione();
         this.confermata = prenotazione.getConfermata();
-        this.cancellata = prenotazione.getCancellata();
         this.confermataDa = new DtoUtente(prenotazione.getConfermataDa());
-        this.cancellataDa = new DtoUtente(prenotazione.getCancellataDa());
+        this.rifiutata = prenotazione.getRifiutata();
+        this.rifiutataDa = new DtoUtente(prenotazione.getRifiutataDa());
+        this.dataRifiuto = prenotazione.getDataRifiuto();
     }
 }

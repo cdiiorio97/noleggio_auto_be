@@ -12,10 +12,17 @@ import java.util.Optional;
 @Repository
 public interface PrenotazioneRepository extends JpaRepository<Prenotazione, Integer> {
 
-    Optional<List<Prenotazione>> findByUtenteId(int utenteId) ;
+    Optional<List<Prenotazione>> findByUtenteIdOrderByIdDesc(int utenteId) ;
 
     @Query(value = "SELECT * FROM prenotazione " +
-                    "WHERE (confermata IS NULL OR confermata = false) " +
-                    "AND (cancellata IS NULL OR cancellata = false)", nativeQuery = true)
-    Optional<List<Prenotazione>> findByConfermataAndCancellata();
+            "WHERE (confermata IS NULL) " +
+            "AND (rifiutata IS NULL) " +
+            "ORDER BY id desc", nativeQuery = true)
+    Optional<List<Prenotazione>> trovaRichiestePrenotazioni();
+
+    @Query(value = "SELECT * FROM prenotazione " +
+            "WHERE (confermata = true) " +
+            "OR (rifiutata = true) " +
+            "ORDER BY id desc", nativeQuery = true)
+    Optional<List<Prenotazione>> trovaPrenotazioniControllate();
 }
