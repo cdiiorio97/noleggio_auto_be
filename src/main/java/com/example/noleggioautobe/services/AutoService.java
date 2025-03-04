@@ -39,8 +39,8 @@ public class AutoService {
     }
 
     public void eliminaAuto(Integer id) throws Exception{
-        Auto pren = autoRepository.findById(id).orElse(null);
-        if(pren == null)
+        Auto auto = autoRepository.findById(id).orElse(null);
+        if(auto == null)
             throw new Exception("Auto non trovata");
         try{
             autoRepository.deleteById(id);
