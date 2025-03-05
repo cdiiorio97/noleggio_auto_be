@@ -30,13 +30,12 @@ import java.util.List;
 public class SecurityConfig  {
 
     final String[] API_ADMIN = {
-            "/utenti/**",
+        "/utenti/all/**", "utenti/admin/**", "/auto/all/**", "/auto/admin/**",
+        "/prenotazioni/admin/**", "/prenotazioni/all/**",
     };
     final String[] API_USER = {
-        "/utenti/get-by-email", "/utenti/modifica-utente",
-        "/auto/get-all", "/auto/get-by-id",
-        "/prenotazioni/get-by-user-email", "/prenotazioni/aggiungi-richiesta-prenotazione",
-            "/prenotazioni/modifica-prenotazione", "/prenotazioni/elimina-prenotazione"
+        "/utenti/all/**", "/auto/all/**",
+        "/prenotazioni/all/**", "/prenotazioni/user/**"
     };
 
     @Autowired

@@ -23,7 +23,7 @@ public class PrenotazioneController {
     @Autowired
     private PrenotazioneService prenotazioneService;
 
-    @GetMapping("/get-all")
+    @GetMapping("/admin/get-all")
     public ResponseEntity getPrenotazioniControllate(){
         try {
             List<DtoPrenotazione> dtoPrenotazioni = prenotazioneService.trovaPrenotazioniControllate();
@@ -33,7 +33,7 @@ public class PrenotazioneController {
         }
     }
 
-    @GetMapping("/get-by-id")
+    @GetMapping("/all/get-by-id")
     public ResponseEntity getPrenotazioneById(@RequestParam Integer id){
         try {
             DtoPrenotazione dtoPrenotazione = prenotazioneService.getPrenotazioneById(id);
@@ -43,7 +43,7 @@ public class PrenotazioneController {
         }
     }
 
-    @GetMapping("/get-by-user-id")
+    @GetMapping("/all/get-by-user-id")
     public ResponseEntity getPrenotazioneByUserId(@RequestParam Integer id){
         try {
             List<DtoPrenotazione> dtoPrenotazione = prenotazioneService.getPrenotazioneByUserId(id);
@@ -53,7 +53,7 @@ public class PrenotazioneController {
         }
     }
 
-    @GetMapping("/get-by-user-email")
+    @GetMapping("/all/get-by-user-email")
     public ResponseEntity getPrenotazioneByUserEmail(@RequestParam String email){
         try {
             List<DtoPrenotazione> dtoPrenotazione = prenotazioneService.getPrenotazioneByUserEmail(email);
@@ -63,7 +63,7 @@ public class PrenotazioneController {
         }
     }
 
-    @PostMapping("/aggiungi-richiesta-prenotazione")
+    @PostMapping("/user/aggiungi-richiesta-prenotazione")
     public ResponseEntity aggiungiRichiestaPrenotazione(@RequestBody DtoPrenotazione dtoPrenotazione){
         try{
             prenotazioneService.aggiungiRichiestaPrenotazione(dtoPrenotazione);
@@ -73,7 +73,7 @@ public class PrenotazioneController {
         }
     }
 
-    @PutMapping("/modifica-prenotazione")
+    @PutMapping("/user/modifica-prenotazione")
     public ResponseEntity modificaPrenotazione(@RequestBody DtoPrenotazione dtoPrenotazione){
         try{
             prenotazioneService.modificaPrenotazione(dtoPrenotazione);
@@ -83,7 +83,7 @@ public class PrenotazioneController {
         }
     }
 
-    @DeleteMapping("/elimina-prenotazione")
+    @DeleteMapping("/all/elimina-prenotazione")
     public ResponseEntity eliminaPrenotazione(@RequestParam Integer id){
         try{
             prenotazioneService.eliminaPrenotazione(id);
@@ -93,7 +93,7 @@ public class PrenotazioneController {
         }
     }
 
-    @GetMapping("/get-richieste-prenotazioni")
+    @GetMapping("/admin/get-richieste-prenotazioni")
     public ResponseEntity richiestePrenotazioni(){
         try {
             List<DtoPrenotazione> dtoRichieste = prenotazioneService.trovaRichiestePrenotazioni();
@@ -103,7 +103,7 @@ public class PrenotazioneController {
         }
     }
 
-    @PutMapping("/conferma-prenotazione")
+    @PutMapping("/admin/conferma-prenotazione")
     public ResponseEntity accettaPrenotazione(@RequestBody DtoPrenotazione dtoPrenotazione){
         try{
             prenotazioneService.confermaPrenotazione(dtoPrenotazione);
@@ -113,7 +113,7 @@ public class PrenotazioneController {
         }
     }
 
-    @PutMapping("/rifiuta-prenotazione")
+    @PutMapping("/admin/rifiuta-prenotazione")
     public ResponseEntity rifiutaPrenotazione(@RequestBody DtoPrenotazione dtoPrenotazione){
         try{
             prenotazioneService.rifiutaPrenotazione(dtoPrenotazione);

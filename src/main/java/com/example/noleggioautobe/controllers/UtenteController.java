@@ -21,13 +21,13 @@ public class UtenteController {
     @Autowired
     private UtenteService utenteService;
 
-    @GetMapping("/get-all")
+    @GetMapping("/admin/get-all")
     public ResponseEntity getUtenti() {
         List<DtoUtente> utenti = utenteService.getUtenti();
         return ResponseEntity.ok(utenti);
     }
 
-    @GetMapping("/get-by-id")
+    @GetMapping("/all/get-by-id")
     public ResponseEntity getUtenteById(@RequestParam Integer id) {
         try{
             DtoUtente utente = utenteService.getUtenteById(id);
@@ -37,7 +37,7 @@ public class UtenteController {
         }
     }
 
-    @GetMapping("/get-by-email")
+    @GetMapping("/all/get-by-email")
     public ResponseEntity getUtenteByEmail(@RequestParam String email) {
         try{
             DtoUtente utente = utenteService.findDtoUtenteByEmail(email);
@@ -47,7 +47,7 @@ public class UtenteController {
         }
     }
 
-    @PostMapping("/aggiungi-utente")
+    @PostMapping("/admin/aggiungi-utente")
     public ResponseEntity aggiungiUtente(@RequestBody DtoUtente dtoUtente){
         try{
             utenteService.aggiungiUtente(dtoUtente);
@@ -57,7 +57,7 @@ public class UtenteController {
         }
     }
 
-    @PutMapping("/modifica-utente")
+    @PutMapping("/all/modifica-utente")
     public ResponseEntity modificaUtente(@RequestBody DtoUtente dtoUtente){
         try{
             utenteService.modificaUtente(dtoUtente);
@@ -67,7 +67,7 @@ public class UtenteController {
         }
     }
 
-    @DeleteMapping("/elimina-utente")
+    @DeleteMapping("/admin/elimina-utente")
     public ResponseEntity eliminaUtente(@RequestParam Integer id){
         try{
             utenteService.eliminaUtente(id);

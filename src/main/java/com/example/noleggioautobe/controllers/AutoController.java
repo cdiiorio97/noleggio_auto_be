@@ -13,12 +13,13 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/auto")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class AutoController {
     
     @Autowired
     private AutoService autoService;
 
-    @GetMapping("/get-all")
+    @GetMapping("/all/get-all")
     public ResponseEntity getAuto() {
         try {
             List<DtoAuto> auto = autoService.trovaAuto();
@@ -29,7 +30,7 @@ public class AutoController {
         }
     }
 
-    @GetMapping("/get-by-id")
+    @GetMapping("/all/get-by-id")
     public ResponseEntity getAutoById(@RequestParam Integer id) {
         try{
             DtoAuto auto = autoService.trovaAutoById(id);
@@ -39,7 +40,7 @@ public class AutoController {
         }
     }
 
-    @PostMapping("/aggiungi-auto")
+    @PostMapping("/admin/aggiungi-auto")
     public ResponseEntity aggiungiAuto(@RequestBody DtoAuto dtoAuto){
         try{
             autoService.aggiungiAuto(dtoAuto);
@@ -49,7 +50,7 @@ public class AutoController {
         }
     }
 
-    @PutMapping("/modifica-auto")
+    @PutMapping("/admin/modifica-auto")
     public ResponseEntity modificaAuto(@RequestBody DtoAuto dtoAuto){
         try{
             autoService.modificaAuto(dtoAuto);
@@ -59,7 +60,7 @@ public class AutoController {
         }
     }
 
-    @DeleteMapping("/elimina-auto")
+    @DeleteMapping("/admin/elimina-auto")
     public ResponseEntity eliminaAuto(@RequestParam Integer id){
         try{
             autoService.eliminaAuto(id);
