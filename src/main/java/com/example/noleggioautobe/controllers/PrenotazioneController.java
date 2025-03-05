@@ -3,9 +3,13 @@ package com.example.noleggioautobe.controllers;
 import com.example.noleggioautobe.dto.DtoPrenotazione;
 import com.example.noleggioautobe.services.PrenotazioneService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +17,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/prenotazioni")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class PrenotazioneController {
 
     @Autowired
@@ -42,6 +47,16 @@ public class PrenotazioneController {
     public ResponseEntity getPrenotazioneByUserId(@RequestParam Integer id){
         try {
             List<DtoPrenotazione> dtoPrenotazione = prenotazioneService.getPrenotazioneByUserId(id);
+            return ResponseEntity.ok(dtoPrenotazione);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get-by-user-email")
+    public ResponseEntity getPrenotazioneByUserEmail(@RequestParam String email){
+        try {
+            List<DtoPrenotazione> dtoPrenotazione = prenotazioneService.getPrenotazioneByUserEmail(email);
             return ResponseEntity.ok(dtoPrenotazione);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

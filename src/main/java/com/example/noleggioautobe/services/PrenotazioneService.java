@@ -3,9 +3,14 @@ package com.example.noleggioautobe.services;
 import com.example.noleggioautobe.dto.DtoPrenotazione;
 import com.example.noleggioautobe.entities.Auto;
 import com.example.noleggioautobe.entities.Prenotazione;
+import com.example.noleggioautobe.entities.Utente;
 import com.example.noleggioautobe.repositories.PrenotazioneRepository;
+import com.example.noleggioautobe.repositories.UtenteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +26,8 @@ public class PrenotazioneService {
 
     @Autowired
     private PrenotazioneRepository prenotazioneRepository;
+    @Autowired
+    private UtenteRepository utenteRepository;
 
     public List<DtoPrenotazione> trovaPrenotazioniControllate(){
         List<Prenotazione> prenotazioni = prenotazioneRepository.trovaPrenotazioniControllate().orElse(null);
@@ -44,6 +51,19 @@ public class PrenotazioneService {
 
     public List<DtoPrenotazione> getPrenotazioneByUserId(Integer id) {
         List<Prenotazione> p = prenotazioneRepository.findByUtenteIdOrderByIdDesc(id).orElse(null);
+        List<DtoPrenotazione> dtoPrenotazioniList = new ArrayList<>();
+        if(p == null)
+            log.warn("Nessuna prenotazione non trovata per l'utente");
+        else {
+            for (Prenotazione elem : p) {
+                dtoPrenotazioniList.add(new DtoPrenotazione(elem));
+            }
+        }
+        return dtoPrenotazioniList;
+    }
+
+    public List<DtoPrenotazione> getPrenotazioneByUserEmail(String email) {
+        List<Prenotazione> p = prenotazioneRepository.findByUtenteEmailOrderByIdDesc(email).orElse(null);
         List<DtoPrenotazione> dtoPrenotazioniList = new ArrayList<>();
         if(p == null)
             log.warn("Nessuna prenotazione non trovata per l'utente");
@@ -103,11 +123,16 @@ public class PrenotazioneService {
 
     public void confermaPrenotazione(DtoPrenotazione dto) throws Exception {
         Prenotazione prenotazione = prenotazioneRepository.findById(dto.getId()).orElse(null);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Utente utente = utenteRepository.findByEmail(userDetails.getUsername()).orElse(null);
+        if(utente == null)
+            throw new Exception("Utente non trovata");
         if(prenotazione == null)
             throw new Exception("Prenotazione non trovata");
         prenotazione.setConfermata(true);
         prenotazione.setDataConferma(new Date());
-        prenotazione.setConfermataDa(convertiDtoUtente(dto.getConfermataDa()));
+        prenotazione.setConfermataDa(utente);
         try{
             prenotazioneRepository.save(prenotazione);
         } catch (Exception e){
@@ -117,11 +142,16 @@ public class PrenotazioneService {
 
     public void rifiutaPrenotazione(DtoPrenotazione dto) throws Exception {
         Prenotazione prenotazione = prenotazioneRepository.findById(dto.getId()).orElse(null);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Utente utente = utenteRepository.findByEmail(userDetails.getUsername()).orElse(null);
         if(prenotazione == null)
             throw new Exception("Prenotazione non trovata");
+        if(utente == null)
+            throw new Exception("Utente non trovata");
         prenotazione.setRifiutata(true);
         prenotazione.setDataRifiuto(new Date());
-        prenotazione.setRifiutataDa(convertiDtoUtente(dto.getRifiutataDa()));
+        prenotazione.setRifiutataDa(utente);
         try{
             prenotazioneRepository.save(prenotazione);
         } catch (Exception e){

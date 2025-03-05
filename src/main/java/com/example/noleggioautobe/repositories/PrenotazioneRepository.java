@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import java.util.Optional;
 public interface PrenotazioneRepository extends JpaRepository<Prenotazione, Integer> {
 
     Optional<List<Prenotazione>> findByUtenteIdOrderByIdDesc(int utenteId) ;
+    Optional<List<Prenotazione>> findByUtenteEmailOrderByIdDesc(String utenteEmail) ;
 
     @Query(value = "SELECT * FROM prenotazione " +
             "WHERE (confermata IS NULL) " +

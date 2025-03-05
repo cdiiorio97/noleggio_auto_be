@@ -6,9 +6,12 @@ import com.example.noleggioautobe.repositories.UtenteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -78,5 +81,27 @@ public class UtenteService {
         utente.setPassword(dto.getPassword());
         utente.setIsAdmin(dto.getIsAdmin());
         return utente;
+    }
+
+    public DtoUtente findDtoUtenteByEmail(String email) throws Exception {
+        Utente utente = utenteRepository.findByEmail(email).orElse(null);
+        if(utente==null)
+            throw new Exception("utente non trovato");
+        return new DtoUtente(utente);
+    }
+
+    public Utente findUtenteByEmail(String email) throws Exception {
+        Utente utente = utenteRepository.findByEmail(email).orElse(null);
+        if(utente==null)
+            throw new Exception("utente non trovato");
+        return utente;
+    }
+
+    private Collection<? extends GrantedAuthority> getAuthorities(Utente u){
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        if(u.getIsAdmin())
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return authorities;
     }
 }

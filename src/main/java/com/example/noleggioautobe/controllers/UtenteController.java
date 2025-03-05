@@ -2,10 +2,12 @@ package com.example.noleggioautobe.controllers;
 
 import com.example.noleggioautobe.dto.DtoUtente;
 import com.example.noleggioautobe.services.UtenteService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/utenti")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class UtenteController {
 
     @Autowired
@@ -28,6 +31,16 @@ public class UtenteController {
     public ResponseEntity getUtenteById(@RequestParam Integer id) {
         try{
             DtoUtente utente = utenteService.getUtenteById(id);
+            return ResponseEntity.ok(utente);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get-by-email")
+    public ResponseEntity getUtenteByEmail(@RequestParam String email) {
+        try{
+            DtoUtente utente = utenteService.findDtoUtenteByEmail(email);
             return ResponseEntity.ok(utente);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
