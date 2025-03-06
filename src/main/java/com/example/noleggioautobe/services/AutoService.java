@@ -3,20 +3,27 @@ package com.example.noleggioautobe.services;
 import com.example.noleggioautobe.dto.DtoAuto;
 import com.example.noleggioautobe.entities.Auto;
 import com.example.noleggioautobe.repositories.AutoRepository;
+import com.example.noleggioautobe.repositories.PrenotazioneRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 @Slf4j
 public class AutoService {
 
-    @Autowired
-    private AutoRepository autoRepository;
+    private final AutoRepository autoRepository;
+    private final PrenotazioneRepository prenotazioneRepository;
+
+    public AutoService(AutoRepository autoRepository,PrenotazioneRepository prenotazioneRepository) {
+        this.autoRepository = autoRepository;
+        this.prenotazioneRepository = prenotazioneRepository;
+    }
 
     public List<DtoAuto> trovaAuto(){
         List<Auto> autoList = autoRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
@@ -75,5 +82,21 @@ public class AutoService {
         auto.setModello(dto.getModello());
         auto.setTarga(dto.getTarga());
         return auto;
+    }
+
+    public List<DtoAuto> cercaAutoDisponibili(String dateStart, String dateEnd) throws Exception {
+        SimpleDateFormat formatoData = new SimpleDateFormat("yyyy-MM-dd");
+        Date dataInizio = formatoData.parse(dateStart);
+        Date dataFine = formatoData.parse(dateEnd);
+        List<Auto> automobili = autoRepository.trovaAutoValide();
+        if(automobili.isEmpty())
+            throw new Exception("Auto non trovata");
+        List<DtoAuto> autoDisponibiliDto = new ArrayList<>();
+        for (Auto auto : automobili){
+            List<Integer> prenotazioniAuto2 = prenotazioneRepository.trovaPrenotazioniIntervallo(auto.getId(), dataInizio, dataFine);
+            if(prenotazioniAuto2.isEmpty())
+                autoDisponibiliDto.add(new DtoAuto(auto));
+        }
+        return autoDisponibiliDto;
     }
 }

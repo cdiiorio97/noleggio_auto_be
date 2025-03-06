@@ -7,7 +7,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,12 +23,13 @@ import java.util.Map;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+
+    private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtil jwtUtil;
     private final ObjectMapper mapper;
 
-    public JwtAuthFilter(JwtUtil jwtUtil, ObjectMapper mapper) {
+    public JwtAuthFilter(CustomUserDetailsService customUserDetailsService, JwtUtil jwtUtil, ObjectMapper mapper) {
+        this.customUserDetailsService = customUserDetailsService;
         this.jwtUtil = jwtUtil;
         this.mapper = mapper;
     }

@@ -7,7 +7,6 @@ import java.util.Date;
 
 @Entity
 @Data
-@Table(name = "prenotazione")
 public class Prenotazione {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

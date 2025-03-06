@@ -3,12 +3,13 @@ package com.example.noleggioautobe.entities;
 import lombok.Data;
 
 import jakarta.persistence.*;
+import lombok.ToString;
 
 import java.util.List;
 
 @Entity
 @Data
-@Table(name = "utente")
+@ToString(exclude = "prenotazioni")
 public class Utente {
 
     @Id
@@ -21,12 +22,12 @@ public class Utente {
     private String password;
     private Boolean isAdmin;
 
-    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Prenotazione> prenotazioni;
 
-    @Override
-    public String toString() {
-        return "Utente{id='" + id + "', nome='" + nome + "', cognome='" + cognome + "', email='" + email + "', isAdmin=" + isAdmin + "}";
+    public Utente(){}
+    public Utente(Integer id) {
+        this.id = id;
     }
 
 }

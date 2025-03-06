@@ -3,7 +3,6 @@ package com.example.noleggioautobe.controllers;
 import com.example.noleggioautobe.dto.DtoUtente;
 import com.example.noleggioautobe.services.UtenteService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +15,20 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class UtenteController {
 
-    @Autowired
-    private UtenteService utenteService;
+    private final UtenteService utenteService;
+    
+    public UtenteController(UtenteService utenteService) {
+        this.utenteService = utenteService;
+    }
 
     @GetMapping("/admin/get-all")
-    public ResponseEntity getUtenti() {
+    public ResponseEntity<?> getUtenti() {
         List<DtoUtente> utenti = utenteService.getUtenti();
         return ResponseEntity.ok(utenti);
     }
 
     @GetMapping("/all/get-by-id")
-    public ResponseEntity getUtenteById(@RequestParam Integer id) {
+    public ResponseEntity<?> getUtenteById(@RequestParam Integer id) {
         try{
             DtoUtente utente = utenteService.getUtenteById(id);
             return ResponseEntity.ok(utente);
@@ -36,7 +38,7 @@ public class UtenteController {
     }
 
     @GetMapping("/all/get-by-email")
-    public ResponseEntity getUtenteByEmail(@RequestParam String email) {
+    public ResponseEntity<?> getUtenteByEmail(@RequestParam String email) {
         try{
             DtoUtente utente = utenteService.findDtoUtenteByEmail(email);
             return ResponseEntity.ok(utente);
@@ -46,7 +48,7 @@ public class UtenteController {
     }
 
     @PostMapping("/admin/aggiungi-utente")
-    public ResponseEntity aggiungiUtente(@RequestBody DtoUtente dtoUtente){
+    public ResponseEntity<?> aggiungiUtente(@RequestBody DtoUtente dtoUtente){
         try{
             utenteService.aggiungiUtente(dtoUtente);
             return ResponseEntity.ok("Utente inserito correttamente");
@@ -56,7 +58,7 @@ public class UtenteController {
     }
 
     @PutMapping("/all/modifica-utente")
-    public ResponseEntity modificaUtente(@RequestBody DtoUtente dtoUtente){
+    public ResponseEntity<?> modificaUtente(@RequestBody DtoUtente dtoUtente){
         try{
             utenteService.modificaUtente(dtoUtente);
             return ResponseEntity.ok("Utente modificato correttamente");
@@ -66,7 +68,7 @@ public class UtenteController {
     }
 
     @DeleteMapping("/admin/elimina-utente")
-    public ResponseEntity eliminaUtente(@RequestParam Integer id){
+    public ResponseEntity<?> eliminaUtente(@RequestParam Integer id){
         try{
             utenteService.eliminaUtente(id);
             return ResponseEntity.ok("Utente eliminato correttamente");

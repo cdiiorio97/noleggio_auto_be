@@ -2,7 +2,6 @@ package com.example.noleggioautobe.auth;
 
 import com.example.noleggioautobe.entities.Utente;
 import com.example.noleggioautobe.repositories.UtenteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,8 +13,11 @@ import java.util.List;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UtenteRepository utenteRepository;
+    private final UtenteRepository utenteRepository;
+
+    public CustomUserDetailsService(UtenteRepository utenteRepository) {
+        this.utenteRepository = utenteRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String nome) throws UsernameNotFoundException {

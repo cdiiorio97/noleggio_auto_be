@@ -3,13 +3,13 @@ package com.example.noleggioautobe.entities;
 import lombok.Data;
 
 import jakarta.persistence.*;
+import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
-@Table(name = "auto")
+@ToString(exclude = "prenotazioni")
 public class Auto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +19,11 @@ public class Auto {
     private String modello;
     private String targa;
 
-    @OneToMany(mappedBy = "auto", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "auto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Prenotazione> prenotazioni;
+
+    public Auto(){}
+    public Auto(Integer id) {
+        this.id = id;
+    }
 }

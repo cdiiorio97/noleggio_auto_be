@@ -2,7 +2,6 @@ package com.example.noleggioautobe.config;
 
 import com.example.noleggioautobe.auth.CustomUserDetailsService;
 import com.example.noleggioautobe.filter.JwtAuthFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,15 +30,14 @@ public class SecurityConfig  {
     };
     final String[] API_USER = {
         "/utenti/all/**", "/auto/all/**",
-        "/prenotazioni/all/**", "/prenotazioni/user/**"
+        "/prenotazioni/all/**", "/prenotazioni/user/aggiungi-richiesta-prenotazione"
     };
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthFilter jwtAuthFilter;
 
     public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthFilter jwtAuthFilter) {
-        this.userDetailsService = customUserDetailsService;
+        this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
@@ -47,7 +45,7 @@ public class SecurityConfig  {
     public AuthenticationManager authenticationManager(HttpSecurity http, NoOpPasswordEncoder noOpPasswordEncoder)
             throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(noOpPasswordEncoder);
+        authenticationManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(noOpPasswordEncoder);
         return authenticationManagerBuilder.build();
     }
 
@@ -66,7 +64,7 @@ public class SecurityConfig  {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);;
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
