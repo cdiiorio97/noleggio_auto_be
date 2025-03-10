@@ -24,12 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String nome) throws UsernameNotFoundException {
-        Utente user = utenteRepository.findByNome(nome).orElse(null);
-        if (user == null) {
-            throw new UsernameNotFoundException(nome);
-        }
+        Utente user = utenteRepository.findByNome(nome).orElseThrow(() -> new UsernameNotFoundException(nome));
         String role = user.getIsAdmin() ? "ADMIN" : "USER";
-        return org.springframework.security.core.userdetails.User.builder()
+        return User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
                 .roles(role)
@@ -37,10 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
-        Utente user = utenteRepository.findByEmail(email).orElse(null);
-        if (user == null) {
-            throw new UsernameNotFoundException(email);
-        }
+        Utente user = utenteRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         String role = user.getIsAdmin() ? "ROLE_ADMIN" : "ROLE_USER";
         List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
 
