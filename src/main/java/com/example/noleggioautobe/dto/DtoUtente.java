@@ -25,12 +25,4 @@ public class DtoUtente {
             this.isAdmin = utente.getIsAdmin();
         }
     }
-
-    public DtoUtente(DtoUtenteModifica dto){
-        this.id = dto.getId();
-        this.nome = dto.getNome();
-        this.cognome = dto.getCognome();
-        this.email = dto.getEmail();
-        this.isAdmin = dto.getIsAdmin();
-    }
 }

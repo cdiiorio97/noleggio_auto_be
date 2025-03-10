@@ -1,6 +1,5 @@
 package com.example.noleggioautobe.repositories;
 
-import com.example.noleggioautobe.entities.Auto;
 import com.example.noleggioautobe.entities.Prenotazione;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

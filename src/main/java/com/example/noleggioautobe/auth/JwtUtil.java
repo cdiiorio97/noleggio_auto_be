@@ -1,7 +1,6 @@
 package com.example.noleggioautobe.auth;
 
 import com.example.noleggioautobe.dto.DtoLoginUserToken;
-import com.example.noleggioautobe.entities.Utente;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
