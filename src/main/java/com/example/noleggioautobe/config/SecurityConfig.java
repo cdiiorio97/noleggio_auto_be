@@ -4,14 +4,15 @@ import com.example.noleggioautobe.auth.CustomUserDetailsService;
 import com.example.noleggioautobe.filter.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -25,12 +26,13 @@ import java.util.List;
 public class SecurityConfig  {
 
     final String[] API_ADMIN = {
-        "/utenti/all/**", "utenti/admin/**", "/auto/all/**", "/auto/admin/**",
-        "/prenotazioni/admin/**", "/prenotazioni/all/**",
+        "/utenti/admin/**", "/auto/admin/**", "/prenotazioni/admin/**"
     };
     final String[] API_USER = {
-        "/utenti/all/**", "/auto/all/**",
-        "/prenotazioni/all/**", "/prenotazioni/user/aggiungi-richiesta-prenotazione"
+        "/prenotazioni/user/**"
+    };
+    final String[] API_ALL = {
+        "/utenti/all/**", "/auto/all/**", "/prenotazioni/all/**"
     };
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -42,37 +44,34 @@ public class SecurityConfig  {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, NoOpPasswordEncoder noOpPasswordEncoder)
+    public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder myPasswordEncoder)
             throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(noOpPasswordEncoder);
+        authenticationManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(myPasswordEncoder);
         return authenticationManagerBuilder.build();
     }
 
+    @Bean
+    public PasswordEncoder myPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(API_ADMIN).hasRole("ADMIN")
+                        .requestMatchers(API_ALL).hasAnyRole("USER", "ADMIN")
                         .requestMatchers(API_USER).hasRole("USER")
+                        .requestMatchers(API_ADMIN).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+                .cors(Customizer.withDefaults())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-    }
-
-
-    @SuppressWarnings("deprecation")
-    @Bean
-    public NoOpPasswordEncoder passwordEncoder() {
-        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
     }
 
     @Bean

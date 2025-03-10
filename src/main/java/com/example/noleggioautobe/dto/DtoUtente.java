@@ -22,8 +22,15 @@ public class DtoUtente {
             this.nome = utente.getNome();
             this.cognome = utente.getCognome();
             this.email = utente.getEmail();
-            this.password = utente.getPassword();
             this.isAdmin = utente.getIsAdmin();
         }
+    }
+
+    public DtoUtente(DtoUtenteModifica dto){
+        this.id = dto.getId();
+        this.nome = dto.getNome();
+        this.cognome = dto.getCognome();
+        this.email = dto.getEmail();
+        this.isAdmin = dto.getIsAdmin();
     }
 }

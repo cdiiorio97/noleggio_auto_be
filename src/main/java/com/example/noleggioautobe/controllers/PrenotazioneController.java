@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/prenotazioni")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class PrenotazioneController {
 
     private final PrenotazioneService prenotazioneService;
@@ -25,101 +24,61 @@ public class PrenotazioneController {
 
     @GetMapping("/admin/get-all")
     public ResponseEntity<?> getPrenotazioniControllate(){
-        try {
             List<DtoPrenotazione> dtoPrenotazioni = prenotazioneService.trovaPrenotazioniControllate();
             return new ResponseEntity<>(dtoPrenotazioni, HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
     }
 
     @GetMapping("/all/get-by-id")
     public ResponseEntity<?> getPrenotazioneById(@RequestParam Integer id){
-        try {
-            DtoPrenotazione dtoPrenotazione = prenotazioneService.getPrenotazioneById(id);
-            return ResponseEntity.ok(dtoPrenotazione);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        DtoPrenotazione dtoPrenotazione = prenotazioneService.getPrenotazioneById(id);
+        return ResponseEntity.ok(dtoPrenotazione);
     }
 
     @GetMapping("/all/get-by-user-id")
     public ResponseEntity<?> getPrenotazioneByUserId(@RequestParam Integer id){
-        try {
-            List<DtoPrenotazione> dtoPrenotazione = prenotazioneService.getPrenotazioneByUserId(id);
-            return ResponseEntity.ok(dtoPrenotazione);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        List<DtoPrenotazione> dtoPrenotazione = prenotazioneService.getPrenotazioneByUserId(id);
+        return ResponseEntity.ok(dtoPrenotazione);
     }
 
     @GetMapping("/all/get-by-user-email")
     public ResponseEntity<?> getPrenotazioneByUserEmail(@RequestParam String email){
-        try {
-            List<DtoPrenotazione> dtoPrenotazione = prenotazioneService.getPrenotazioneByUserEmail(email);
-            return ResponseEntity.ok(dtoPrenotazione);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        List<DtoPrenotazione> dtoPrenotazione = prenotazioneService.getPrenotazioneByUserEmail(email);
+        return ResponseEntity.ok(dtoPrenotazione);
     }
 
     @PostMapping("/user/aggiungi-richiesta-prenotazione")
-    public ResponseEntity<?> aggiungiRichiestaPrenotazione(@RequestBody DtoRichiestaPrenotazione dtoRichiesta){
-        try{
-            prenotazioneService.aggiungiRichiestaPrenotazione(dtoRichiesta);
-            return ResponseEntity.ok("Richiesta prenotazione inserita correttamente");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'aggiunta della prenotazione: " + e.getMessage());
-        }
+    public ResponseEntity<?> aggiungiRichiestaPrenotazione(@RequestBody DtoRichiestaPrenotazione dtoRichiesta) throws Exception{
+        prenotazioneService.aggiungiRichiestaPrenotazione(dtoRichiesta);
+        return ResponseEntity.ok("Richiesta prenotazione inserita correttamente");
     }
 
     @PutMapping("/user/modifica-prenotazione")
-    public ResponseEntity<?> modificaPrenotazione(@RequestBody DtoPrenotazione dtoPrenotazione){
-        try{
-            prenotazioneService.modificaPrenotazione(dtoPrenotazione);
-            return ResponseEntity.ok("Modifica prenotazione avvenuta correttamente");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante la modifica della prenotazione: " + e.getMessage());
-        }
+    public ResponseEntity<?> modificaPrenotazione(@RequestBody DtoPrenotazione dtoPrenotazione) throws Exception{
+        prenotazioneService.modificaPrenotazione(dtoPrenotazione);
+        return ResponseEntity.ok("Modifica prenotazione avvenuta correttamente");
     }
 
     @DeleteMapping("/all/elimina-prenotazione")
-    public ResponseEntity<?> eliminaPrenotazione(@RequestParam Integer id){
-        try{
-            prenotazioneService.eliminaPrenotazione(id);
-            return ResponseEntity.ok("Prenotazione eliminata correttamente");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'eliminazione della prenotazione: " + e.getMessage());
-        }
+    public ResponseEntity<?> eliminaPrenotazione(@RequestParam Integer id) throws Exception{
+        prenotazioneService.eliminaPrenotazione(id);
+        return ResponseEntity.ok("Prenotazione eliminata correttamente");
     }
 
     @GetMapping("/admin/get-richieste-prenotazioni")
     public ResponseEntity<?> richiestePrenotazioni(){
-        try {
-            List<DtoPrenotazione> dtoRichieste = prenotazioneService.trovaRichiestePrenotazioni();
-            return new ResponseEntity<>(dtoRichieste, HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        List<DtoPrenotazione> dtoRichieste = prenotazioneService.trovaRichiestePrenotazioni();
+        return new ResponseEntity<>(dtoRichieste, HttpStatus.OK);
     }
 
     @PutMapping("/admin/conferma-prenotazione")
-    public ResponseEntity<?> accettaPrenotazione(@RequestParam Integer id){
-        try{
-            prenotazioneService.confermaPrenotazione(id);
-            return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("Richiesta prenotazione inserita correttamente");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante la conferma della prenotazione: " + e.getMessage());
-        }
+    public ResponseEntity<?> accettaPrenotazione(@RequestParam Integer id) throws Exception{
+        prenotazioneService.modificaStatoPrenotazione(id, "conferma");
+        return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("Richiesta prenotazione inserita correttamente");
     }
 
     @PutMapping("/admin/rifiuta-prenotazione")
-    public ResponseEntity<?> rifiutaPrenotazione(@RequestParam Integer id){
-        try{
-            prenotazioneService.rifiutaPrenotazione(id);
-            return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("Richiesta prenotazione inserita correttamente");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante il rifiuto della prenotazione: " + e.getMessage());
-        }
+    public ResponseEntity<?> rifiutaPrenotazione(@RequestParam Integer id) throws Exception{
+        prenotazioneService.modificaStatoPrenotazione(id, "rifiuta");
+        return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("Richiesta prenotazione inserita correttamente");
     }
 }

@@ -1,5 +1,6 @@
 package com.example.noleggioautobe.auth;
 
+import com.example.noleggioautobe.dto.DtoLoginUserToken;
 import com.example.noleggioautobe.entities.Utente;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -23,7 +24,7 @@ public class JwtUtil {
         this.jwtParser = Jwts.parserBuilder().setSigningKey(secret_key).build();
     }
 
-    public String createToken(Utente user) {
+    public String createToken(DtoLoginUserToken user) {
         Claims claims = Jwts.claims().setSubject(user.getEmail());
         claims.put("isAdmin",user.getIsAdmin());
         Date tokenCreateTime = new Date();

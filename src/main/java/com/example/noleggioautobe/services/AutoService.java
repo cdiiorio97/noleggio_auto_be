@@ -3,12 +3,10 @@ package com.example.noleggioautobe.services;
 import com.example.noleggioautobe.dto.DtoAuto;
 import com.example.noleggioautobe.entities.Auto;
 import com.example.noleggioautobe.repositories.AutoRepository;
-import com.example.noleggioautobe.repositories.PrenotazioneRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,85 +16,68 @@ import java.util.List;
 public class AutoService {
 
     private final AutoRepository autoRepository;
-    private final PrenotazioneRepository prenotazioneRepository;
+    private final MapperService mapper;
 
-    public AutoService(AutoRepository autoRepository,PrenotazioneRepository prenotazioneRepository) {
+    public AutoService(AutoRepository autoRepository, MapperService mapper) {
         this.autoRepository = autoRepository;
-        this.prenotazioneRepository = prenotazioneRepository;
+        this.mapper = mapper;
     }
 
     public List<DtoAuto> trovaAuto(){
         List<Auto> autoList = autoRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
         List<DtoAuto> dtoAutoList = new ArrayList<>();
-        for (Auto auto : autoList) {
-            if(auto.getId() != 1)
-                dtoAutoList.add(new DtoAuto(auto));
-        }
+        autoList.forEach(a -> dtoAutoList.add(new DtoAuto(a)));
         return dtoAutoList;
     }
 
-    public DtoAuto trovaAutoById(Integer id) throws Exception{
-        Auto auto = autoRepository.findById(id).orElse(null);
-        if(auto == null) {
-            log.error("Auto non trovata");
-            throw new Exception("Auto non trovata");
-        }
-        else
-            return new DtoAuto(auto);
+    public DtoAuto trovaAutoById(Integer id) throws NullPointerException{
+        Auto auto = autoRepository.findById(id).orElseThrow(() -> new NullPointerException("Auto non trovata"));
+        return new DtoAuto(auto);
     }
 
-    public void eliminaAuto(Integer id) throws Exception{
-        Auto auto = autoRepository.findById(id).orElse(null);
-        if(auto == null)
-            throw new Exception("Auto non trovata");
+    public void eliminaAuto(Integer id) throws NullPointerException{
         try{
-            autoRepository.deleteById(id);
-        } catch (Exception e){
-            throw new Exception(e.getMessage());
+            Auto auto = autoRepository.findById(id).orElseThrow(() -> new NullPointerException("Auto non trovata"));
+            autoRepository.deleteById(auto.getId());
+        } catch (NullPointerException e){
+            throw new NullPointerException(e.getMessage());
         }
     }
 
-    public void aggiungiAuto(DtoAuto dto) throws Exception {
-        Auto Auto = convertiDtoAuto(dto);
-        try{
-            autoRepository.save(Auto);
+    public Integer aggiungiAuto(DtoAuto dto) throws Exception {
+        try {
+            if(dto.getId() != null) {
+                Auto autoDB = autoRepository.findById(dto.getId()).orElse(null);
+                if(autoDB != null)
+                    throw new Exception("Trovata auto con questo id");
+            }
+            Auto auto = mapper.convertDtoToAuto(new Auto(), dto);
+            autoRepository.save(auto);
+            return auto.getId();
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
     }
 
     public void modificaAuto(DtoAuto dto) throws Exception {
-        Auto Auto = convertiDtoAuto(dto);
-        try{
-            autoRepository.save(Auto);
+        try {
+            Auto auto = autoRepository.findById(dto.getId()).orElseThrow(() -> new NullPointerException("Auto non trovata"));
+            mapper.convertDtoToAuto(auto, dto);
+            autoRepository.save(auto);
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
     }
 
-    static Auto convertiDtoAuto(DtoAuto dto) {
-        Auto auto = new Auto();
-        if(dto.getId() != null  && dto.getId() != 0)
-            auto.setId(dto.getId());
-        auto.setBrand(dto.getBrand());
-        auto.setModello(dto.getModello());
-        auto.setTarga(dto.getTarga());
-        return auto;
-    }
-
-    public List<DtoAuto> cercaAutoDisponibili(String dateStart, String dateEnd) throws Exception {
-        SimpleDateFormat formatoData = new SimpleDateFormat("yyyy-MM-dd");
-        Date dataInizio = formatoData.parse(dateStart);
-        Date dataFine = formatoData.parse(dateEnd);
-        List<Auto> automobili = autoRepository.trovaAutoValide();
-        if(automobili.isEmpty())
-            throw new Exception("Auto non trovata");
+    public List<DtoAuto> cercaAutoDisponibili(Date dataInizio, Date dataFine) throws Exception {
         List<DtoAuto> autoDisponibiliDto = new ArrayList<>();
-        for (Auto auto : automobili){
-            List<Integer> prenotazioniAuto2 = prenotazioneRepository.trovaPrenotazioniIntervallo(auto.getId(), dataInizio, dataFine);
-            if(prenotazioniAuto2.isEmpty())
-                autoDisponibiliDto.add(new DtoAuto(auto));
+        try{
+            List<Auto> autoDisponibili = autoRepository.trovaAutoDisponibili(dataInizio, dataFine);
+            if(!autoDisponibili.isEmpty())
+                autoDisponibili.forEach(elem -> autoDisponibiliDto.add(new DtoAuto(elem)));
+            return autoDisponibiliDto;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
         }
-        return autoDisponibiliDto;
     }
 }

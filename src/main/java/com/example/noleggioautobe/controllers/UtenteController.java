@@ -1,18 +1,19 @@
 package com.example.noleggioautobe.controllers;
 
 import com.example.noleggioautobe.dto.DtoUtente;
+import com.example.noleggioautobe.dto.DtoUtenteModifica;
 import com.example.noleggioautobe.services.UtenteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @Slf4j
 @RequestMapping("/utenti")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class UtenteController {
 
     private final UtenteService utenteService;
@@ -28,52 +29,32 @@ public class UtenteController {
     }
 
     @GetMapping("/all/get-by-id")
-    public ResponseEntity<?> getUtenteById(@RequestParam Integer id) {
-        try{
-            DtoUtente utente = utenteService.getUtenteById(id);
-            return ResponseEntity.ok(utente);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+    public ResponseEntity<?> getUtenteById(@RequestParam Integer id) throws NullPointerException {
+        DtoUtente utente = utenteService.getUtenteById(id);
+        return ResponseEntity.ok(utente);
     }
 
     @GetMapping("/all/get-by-email")
-    public ResponseEntity<?> getUtenteByEmail(@RequestParam String email) {
-        try{
-            DtoUtente utente = utenteService.findDtoUtenteByEmail(email);
-            return ResponseEntity.ok(utente);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+    public ResponseEntity<?> getUtenteByEmail(@RequestParam String email) throws NullPointerException {
+        DtoUtente utente = utenteService.findDtoUtenteByEmail(email);
+        return ResponseEntity.ok(utente);
     }
 
     @PostMapping("/admin/aggiungi-utente")
-    public ResponseEntity<?> aggiungiUtente(@RequestBody DtoUtente dtoUtente){
-        try{
-            utenteService.aggiungiUtente(dtoUtente);
-            return ResponseEntity.ok("Utente inserito correttamente");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'inserimento del nuovo utente: " + e.getMessage());
-        }
+    public ResponseEntity<?> aggiungiUtente(@RequestBody DtoUtenteModifica dtoUtente) throws Exception {
+        Integer id = utenteService.aggiungiUtente(dtoUtente);
+        return ResponseEntity.status(HttpStatus.OK).body(id);
     }
 
     @PutMapping("/all/modifica-utente")
-    public ResponseEntity<?> modificaUtente(@RequestBody DtoUtente dtoUtente){
-        try{
-            utenteService.modificaUtente(dtoUtente);
-            return ResponseEntity.ok("Utente modificato correttamente");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante la modifica dei dati utente: " + e.getMessage());
-        }
+    public ResponseEntity<?> modificaUtente(@RequestBody DtoUtenteModifica dtoUtente) throws NullPointerException, IOException {
+        utenteService.modificaUtente(dtoUtente);
+        return ResponseEntity.status(HttpStatus.OK).body(dtoUtente.getId());
     }
 
     @DeleteMapping("/admin/elimina-utente")
-    public ResponseEntity<?> eliminaUtente(@RequestParam Integer id){
-        try{
-            utenteService.eliminaUtente(id);
-            return ResponseEntity.ok("Utente eliminato correttamente");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'eliminazione dell'utente: " + e.getMessage());
-        }
+    public ResponseEntity<?> eliminaUtente(@RequestParam Integer id) throws Exception {
+        utenteService.eliminaUtente(id);
+        return ResponseEntity.ok("Utente eliminato correttamente");
     }
 }

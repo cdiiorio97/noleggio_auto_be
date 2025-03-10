@@ -24,8 +24,6 @@ public class DtoPrenotazione {
     private Boolean rifiutata;
     private DtoUtente rifiutataDa;
     private Date dataRifiuto;
-    private boolean editabile; //per congruenza con frontend
-    private boolean viewOnly;  //per congruenza con frontend
 
     public DtoPrenotazione(Prenotazione prenotazione) {
         this.id = prenotazione.getId();

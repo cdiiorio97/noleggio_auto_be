@@ -21,9 +21,4 @@ public class Auto {
 
     @OneToMany(mappedBy = "auto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Prenotazione> prenotazioni;
-
-    public Auto(){}
-    public Auto(Integer id) {
-        this.id = id;
-    }
 }

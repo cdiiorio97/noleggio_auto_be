@@ -3,16 +3,17 @@ package com.example.noleggioautobe.controllers;
 import com.example.noleggioautobe.dto.DtoAuto;
 import com.example.noleggioautobe.services.AutoService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
 @Slf4j
 @RequestMapping("/auto")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class AutoController {
 
     private final AutoService autoService;
@@ -21,62 +22,38 @@ public class AutoController {
 
     @GetMapping("/all/get-all")
     public ResponseEntity<?> getAuto() {
-        try {
-            List<DtoAuto> auto = autoService.trovaAuto();
-            return ResponseEntity.ok(auto);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        List<DtoAuto> auto = autoService.trovaAuto();
+        return ResponseEntity.ok(auto);
     }
 
     @GetMapping("/all/get-by-id")
     public ResponseEntity<?> getAutoById(@RequestParam Integer id) {
-        try{
-            DtoAuto auto = autoService.trovaAutoById(id);
-            return ResponseEntity.ok(auto);
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        DtoAuto auto = autoService.trovaAutoById(id);
+        return ResponseEntity.ok(auto);
     }
 
     @PostMapping("/admin/aggiungi-auto")
-    public ResponseEntity<?> aggiungiAuto(@RequestBody DtoAuto dtoAuto){
-        try{
-            autoService.aggiungiAuto(dtoAuto);
-            return ResponseEntity.ok("Auto inserita correttamente");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'inserimento della nuova auto: " + e.getMessage());
-        }
+    public ResponseEntity<?> aggiungiAuto(@RequestBody DtoAuto dtoAuto) throws Exception{
+        Integer auto = autoService.aggiungiAuto(dtoAuto);
+        return ResponseEntity.status(HttpStatus.OK).body(auto);
     }
 
     @PutMapping("/admin/modifica-auto")
-    public ResponseEntity<?> modificaAuto(@RequestBody DtoAuto dtoAuto){
-        try{
-            autoService.modificaAuto(dtoAuto);
-            return ResponseEntity.ok("Auto modificata correttamente");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante la modifica dell'auto: " + e.getMessage());
-        }
+    public ResponseEntity<?> modificaAuto(@RequestBody DtoAuto dtoAuto) throws Exception {
+        autoService.modificaAuto(dtoAuto);
+        return ResponseEntity.status(HttpStatus.OK).body(dtoAuto.getId());
     }
 
     @DeleteMapping("/admin/elimina-auto")
-    public ResponseEntity<?> eliminaAuto(@RequestParam Integer id){
-        try{
-            autoService.eliminaAuto(id);
-            return ResponseEntity.ok("Auto eliminata correttamente");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore durante l'eliminazione dell'auto: " + e.getMessage());
-        }
+    public ResponseEntity<?> eliminaAuto(@RequestParam Integer id) throws NullPointerException{
+        autoService.eliminaAuto(id);
+        return ResponseEntity.ok("Auto eliminata correttamente");
     }
 
     @GetMapping("/all/trova-auto-disponibili")
-    public ResponseEntity<?> getAutoDisponibili(@RequestParam String dataInizio, @RequestParam String dataFine) {
-        try{
-            List<DtoAuto> autoList = autoService.cercaAutoDisponibili(dataInizio, dataFine);
-            return ResponseEntity.ok(autoList);
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+    public ResponseEntity<?> getAutoDisponibili(@RequestParam("dataInizio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date dataInizio,
+                                                @RequestParam("dataFine") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date dataFine) throws Exception {
+        List<DtoAuto> autoList = autoService.cercaAutoDisponibili(dataInizio, dataFine);
+        return ResponseEntity.ok(autoList);
     }
 }
